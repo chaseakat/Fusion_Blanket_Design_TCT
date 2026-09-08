@@ -260,8 +260,9 @@ def write_input(name: str, source: int, amp: float, restart: int,
     (d / "C1input").write_text(text)
     launch = f'''#!/usr/bin/env bash
 set -euo pipefail
-export TMPDIR=/var/tmp
-export OMPI_MCA_orte_tmpdir_base=/var/tmp
+export TMPDIR="${TMPDIR:-/tmp/tct-$USER}"
+export OMPI_MCA_orte_tmpdir_base="${OMPI_MCA_orte_tmpdir_base:-$TMPDIR}"
+mkdir -p "$TMPDIR" "$OMPI_MCA_orte_tmpdir_base"
 source "$HOME/spack/share/spack/setup-env.sh"
 spack env activate m3dc1-deps
 cd "{d}"
@@ -639,3 +640,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
